@@ -118,7 +118,7 @@ def draw_predictions_and_create_json(image, results):
                     for idx, pos in enumerate(parking_space_positions, start=1):
                         if is_similar_position(((x1, y1), (x2, y2)), pos):
                             # 파킹스페이스 인식 및 JSON 데이터 생성
-                            print(f"Parkingspace {idx}: ({x1}, {y1}), ({x2}, {y2})")
+                            print(f"Parkingspace {idx}: ({x1}, {y1}), ({x2, y2})")
                             json_data["free"].append({"free": idx})
 
                             # 파킹스페이스 결과를 이미지에 표시
@@ -155,6 +155,10 @@ def predict_webcam_ocr(model_path):
 
     frame_count = 0
 
+    # 이미지 저장을 위한 디렉토리 경로 설정
+    save_dir = os.path.join(os.getcwd(), 'image')
+    os.makedirs(save_dir, exist_ok=True)  # 디렉토리가 없으면 생성
+
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -171,12 +175,12 @@ def predict_webcam_ocr(model_path):
 
         if status_changed:
             # YOLO 처리 전의 원본 이미지 저장
-            original_image_path = f'original_image_{frame_count}.png'
+            original_image_path = os.path.join(save_dir, f'original_image_{frame_count}.png')
             cv2.imwrite(original_image_path, original_frame)
             print(f"Original image saved as {original_image_path}")
 
             # YOLO 처리된 이미지 저장
-            processed_image_path = f'processed_image_{frame_count}.png'
+            processed_image_path = os.path.join(save_dir, f'processed_image_{frame_count}.png')
             cv2.imwrite(processed_image_path, processed_frame)
             print(f"Processed image saved as {processed_image_path}")
 
